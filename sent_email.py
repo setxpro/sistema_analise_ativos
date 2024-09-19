@@ -21,7 +21,14 @@ email_user = user_email  # E-mail do remetente
 email_password = pass_email  # Senha do remetente
 
 
-def sendEmail(to, retorno_ibovespa, retorno_dolar, retorno_sp500, total_items):
+def sendEmail(
+        to,
+        total_time,
+        retorno_dolar,
+        retorno_sp500,
+        total_items
+):
+
     print("SEND EMAIL.")
     # Informações do e-mail
     from_email = email_user  # Define o remetente como o próprio usuário
@@ -30,14 +37,14 @@ def sendEmail(to, retorno_ibovespa, retorno_dolar, retorno_sp500, total_items):
 
     # Corpo do e-mail com os retornos diários dos índices e moedas
     body = f'''Prezados, segue o relatório de mercado:
-
-    * O Ibovespa teve o retorno de {retorno_ibovespa}.
-    * O Dólar teve o retorno de {retorno_dolar}.
-    * O S&P500 teve o retorno de {retorno_sp500}.
+    
+    * USD/BRL (BRL=X) teve o retorno de {retorno_dolar}.
+    
+    * S&P 500 (^GSPC) teve o retorno de {retorno_sp500}.
     
     * {total_items} registros encontrados.
     
-    Segue em anexo a peformance dos ativos nos últimos 6 meses.
+    Segue em anexo a peformance dos ativos nos últimos {total_time}.
 
     Att,
     Yahoo Finance
@@ -71,14 +78,11 @@ def sendEmail(to, retorno_ibovespa, retorno_dolar, retorno_sp500, total_items):
     # Tempo para as images serem salvas
     time.sleep(5)
 
-
-    # Define o caminho completo do arquivo CSV
-    anexo_ibovespa = "../dataset/ibovespa.png"
-    anexo_dolar = "../dataset/dollar.png"
-    anexo_sp = "../dataset/sp500.png"
+    # Define o caminho completo do arquivo CSVx
+    anexo_dolar = "../dataset/dollar.html"
+    anexo_sp = "../dataset/sp500.html"
 
     # Anexa os arquivos ao e-mail
-    anexar_arquivo(message, anexo_ibovespa)
     anexar_arquivo(message, anexo_dolar)
     anexar_arquivo(message, anexo_sp)
 

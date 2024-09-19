@@ -1,10 +1,9 @@
 from flask import Flask
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request
 
-from utils.format_date import format_date
+from utils.format_date import format_date, calcular_intervalo
 from get_dataset import createDataset
-from main import analyze_market_data
-import time
+from spark import analyze_market_data
 
 app = Flask(__name__)
 
@@ -22,17 +21,12 @@ def sendReport():
         dataFinal = format_date(form["dataFinal"])
         email = form["email"]
 
-        print(dataInicial)
-        print(dataFinal)
-
         # Create DATASET
         createDataset(dataInicial, dataFinal)
 
-        # Adiciona um atraso de 5 segundos
-        time.sleep(5)
-        print(email)
+        total_time = calcular_intervalo(dataInicial, dataFinal)
 
-        analyze_market_data(email)
+        analyze_market_data(email, total_time)
 
         return render_template('index.html', mensagem="Relatório enviado com sucesso!")
 

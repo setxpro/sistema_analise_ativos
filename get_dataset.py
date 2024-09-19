@@ -3,24 +3,25 @@ import os
 
 
 def createDataset(start, end):
-    print("Creating dataset....")
     # Ativos - https://finance.yahoo.com
     # Definição dos ativos de interesse:
     # ^BVSP - Índice IBOVESPA (índice de ações da bolsa brasileira)
     # ^GSPC - S&P 500 (índice de ações dos EUA)
     # BRL=X - Taxa de câmbio USD/BRL (Dólar americano para Real brasileiro)
-    tickers = ["^BVSP", "^GSPC", "BRL=X"]
+    tickers = ["^GSPC", "BRL=X"]
 
     # Baixa os dados ajustados de fechamento ('Adj Close') dos últimos 6 meses para os ativos especificados
     # A função yf.download retorna um DataFrame com os preços diários dos ativos
-    print("Get Period....")
+    print(start)
+    print(end)
+
     dados_mercado = yf.download(tickers, start=start, end=end)["Adj Close"]
     # Remove quaisquer valores faltantes do DataFrame (linhas com NaN) para garantir que os dados estejam completos
     dados_mercado = dados_mercado.dropna()
 
     # Renomeia as colunas para facilitar a leitura e identificação
     # 'BRL=X' é renomeado para 'DOLAR', '^BVSP' para 'IBOVESPA' e '^GSPC' para 'S&P500'
-    dados_mercado.columns = ["DOLAR", "IBOVESPA", "S&P500"]
+    dados_mercado.columns = ["DOLAR", "S&P500"]
 
     # Definir o caminho para a pasta 'dataset' na raiz do projeto
     root_dir = os.path.dirname(os.path.abspath(__file__))  # Diretório atual do script

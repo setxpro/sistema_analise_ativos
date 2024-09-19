@@ -1,4 +1,5 @@
 # main.py
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import mplcyberpunk
 from pyspark.sql import SparkSession
@@ -24,18 +25,20 @@ def analyze_market_data(email):
 
     # Inicializa uma Spark Session para ler e manipular dados
     spark = SparkSession.builder \
-        .master("local") \
+        .master("spark://spark-master:7077") \
         .appName("Market Data Analysis") \
         .getOrCreate()
 
     # Lê o arquivo CSV e cria um DataFrame do Spark
     try:
+
         stock_prices_df = spark.read \
             .format("csv") \
             .option("header", "true") \
             .option("inferSchema", "true") \
             .option("sep", ",") \
             .load(file_path)
+
     except Exception as e:
         print(f"Erro ao ler o arquivo CSV: {e}")
         spark.stop()
@@ -50,8 +53,7 @@ def analyze_market_data(email):
     # Calcula o retorno diário para as colunas
     retornos_diarios = dados_mercado.withColumn(
         "DOLAR", (col("DOLAR") / lag("DOLAR").over(windowSpec) - 1) * 100)
-    retornos_diarios = retornos_diarios.withColumn(
-        "IBOVESPA", (col("IBOVESPA") / lag("IBOVESPA").over(windowSpec) - 1) * 100)
+
     retornos_diarios = retornos_diarios.withColumn(
         "S&P500", (col("S&P500") / lag("S&P500").over(windowSpec) - 1) * 100)
 
@@ -64,18 +66,7 @@ def analyze_market_data(email):
     # Plotagem dos gráficos
     try:
 
-        # Ajuste o tamanho da figura para visualização de longo prazo
-        plt.figure(figsize=(40, 20))  # Mais largo para melhor visualização em um longo período
-        plt.plot(pdf["Date"], pdf["IBOVESPA"], label="IBOVESPA")
-        plt.title("IBOVESPA")
-        plt.xlabel("Date")
-        plt.ylabel("Price")
-        plt.legend()
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.savefig("../dataset/ibovespa.png")  # Salva o gráfico
-
-        plt.figure(figsize=(40, 20))  # Mais largo para melhor visualização em um longo períodovs
+        plt.figure(figsize=(30, 20), dpi=300)  # Mais largo para melhor visualização em um longo períodovs
         plt.plot(pdf["Date"], pdf["DOLAR"], label="DOLAR")
         plt.title("DOLAR")
         plt.xlabel("Date")
@@ -85,7 +76,7 @@ def analyze_market_data(email):
         plt.tight_layout()
         plt.savefig("../dataset/dollar.png")  # Salva o gráfico
 
-        plt.figure(figsize=(40, 20))  # Mais largo para melhor visualização em um longo período
+        plt.figure(figsize=(30, 20), dpi=300)  # Mais largo para melhor visualização em um longo período
         plt.plot(pdf["Date"], pdf["S&P500"], label="S&P500")
         plt.title("S&P500")
         plt.xlabel("Date")
@@ -94,6 +85,7 @@ def analyze_market_data(email):
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.savefig("../dataset/sp500.png")  # Salva o gráfico
+
 
     except Exception as e:
         print(f"Erro ao gerar gráficos: {e}")
@@ -104,10 +96,6 @@ def analyze_market_data(email):
         last_value_dolar = df_dolar["DOLAR"].iloc[-1]
         retorno_dolar = str(round(last_value_dolar, 2)) + "%"
 
-        df_ibovespa = retornos_diarios.select("IBOVESPA").toPandas()
-        last_value_ibovespa = df_ibovespa["IBOVESPA"].iloc[-1]
-        retorno_ibovespa = str(round(last_value_ibovespa, 2)) + "%"
-
         df_ps = retornos_diarios.select("S&P500").toPandas()
         last_value_ps = df_ps["S&P500"].iloc[-1]
         retorno_sp500 = str(round(last_value_ps, 2)) + "%"
@@ -115,7 +103,12 @@ def analyze_market_data(email):
         total_items = stock_prices_df.count()
 
         # Envio do e-mail
-        sendEmail(email, retorno_ibovespa, retorno_dolar, retorno_sp500, total_items)
+        sendEmail(
+            email,
+            retorno_dolar,
+            retorno_sp500,
+            total_items,
+        )
 
     except Exception as e:
         print(f"Erro ao calcular retornos diários: {e}")
