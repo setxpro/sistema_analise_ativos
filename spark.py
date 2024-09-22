@@ -6,7 +6,6 @@ import os
 
 from sent_email import sendEmail
 
-
 def analyze_market_data(email, total_time):
     # Definir o caminho para a pasta 'dataset' na raiz do projeto
     root_dir = os.path.dirname(os.path.abspath(__file__))  # Diretório atual do script
