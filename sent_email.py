@@ -28,7 +28,6 @@ def sendEmail(
         retorno_sp500,
         total_items
 ):
-
     print("SEND EMAIL.")
     # Informações do e-mail
     from_email = email_user  # Define o remetente como o próprio usuário
@@ -37,13 +36,13 @@ def sendEmail(
 
     # Corpo do e-mail com os retornos diários dos índices e moedas
     body = f'''Prezados, segue o relatório de mercado:
-    
+
     * USD/BRL (BRL=X) teve o retorno de {retorno_dolar}.
-    
+
     * S&P 500 (^GSPC) teve o retorno de {retorno_sp500}.
-    
+
     * {total_items} registros encontrados.
-    
+
     Segue em anexo a peformance dos ativos nos últimos {total_time}.
 
     Att,

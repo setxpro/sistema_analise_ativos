@@ -6,7 +6,6 @@ import os
 
 from sent_email import sendEmail
 
-
 def analyze_market_data(email, total_time):
     # Definir o caminho para a pasta 'dataset' na raiz do projeto
     root_dir = os.path.dirname(os.path.abspath(__file__))  # Diretório atual do script
@@ -43,7 +42,7 @@ def analyze_market_data(email, total_time):
         return False
 
     # Remove quaisquer registros com valores ausentes (NaN) nas colunas do DataFrame
-    dados_mercado = stock_prices_df.dropna()
+    dados_mercado = stock_prices_df.fillna(0)
 
     # Define uma especificação de janela ordenada pela coluna "Date"
     windowSpec = Window.orderBy("Date")
