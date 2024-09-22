@@ -1,41 +1,54 @@
-{% extends 'base.html' %} {% block title %} Teste {% endblock
-  %} {% block body %}
+{% extends 'base.html' %}
+{% block title %} Teste {% endblock %}
+{% block body %}
 
-  <div class="row my-2">
+<div class="row my-2">
     <h6>Esse programa busca os dados dos ativos e envia um relatório para o email desejado</h6>
-  </div>
+</div>
 
-  <div>
+<div>
     <h6>Lista dos Tickers utilizados</h6>
     <ul>
-      <li>S&P 500 (^GSPC)</li>
-      <li>USD/BRL (BRL=X)</li>
+        <li>S&P 500 - Standard & Poor's 500 (^GSPC)</li>
+        <li>USD/BRL - Dollar (BRL=X)</li>
     </ul>
-  </div>
-  <hr/>
-  <form action="/" method="POST" id="send">
+</div>
+<hr/>
+
+<!-- Elemento de carregamento -->
+<div id="loading" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(255,255,255,0.8); padding:20px; border:1px solid #ccc; border-radius:5px; z-index:1000;">
+    Carregando, por favor aguarde...
+</div>
+
+<form action="/" method="POST" id="send">
     <div class="row">
-      <div class="col-md-2 col-sm-2 form-group mt-2">
-        <label for="dataInicial">Data Inicial:</label>
-        <input class="form-control" type="text" id="dataInicial" name="dataInicial" placeholder="dd/mm/yyyy"/>
-      </div>
-      <div class="col-md-2 col-sm-2 form-group mt-2">
-        <label for="dataFinal">Data Final:</label>
-        <input class="form-control" type="text" id="dataFinal" name="dataFinal" placeholder="dd/mm/yyyy"/>
-      </div>
+        <div class="col-md-2 col-sm-2 form-group mt-2">
+            <label for="dataInicial">Data Inicial:</label>
+            <input class="form-control" type="text" id="dataInicial" name="dataInicial" placeholder="dd/mm/yyyy"/>
+        </div>
+        <div class="col-md-2 col-sm-2 form-group mt-2">
+            <label for="dataFinal">Data Final:</label>
+            <input class="form-control" type="text" id="dataFinal" name="dataFinal" placeholder="dd/mm/yyyy"/>
+        </div>
     </div>
     <div class="col-md-3 col-sm-2 form-group mt-2">
-      <label for="email">Email:</label>
-      <input class="form-control" type="text" id="email" name="email" placeholder="teste@teste.com"/>
+        <label for="email">Email:</label>
+        <input class="form-control" type="text" id="email" name="email" placeholder="teste@teste.com"/>
     </div>
     <div class="col-md-3 col-sm-2 form-group mt-3"></div>
-      <input
+    <input
         class="btn btn-primary mt-2"
         type="submit"
         id="submit"
         value="Enviar email"
-      />
+    />
     </div>
-  </form>
+</form>
+
+<script>
+    document.getElementById('send').onsubmit = function() {
+        document.getElementById('loading').style.display = 'block'; // Exibe o loading
+    };
+</script>
 
 {% endblock %}

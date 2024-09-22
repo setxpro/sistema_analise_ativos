@@ -43,7 +43,7 @@ def analyze_market_data(email, total_time):
         return False
 
     # Remove quaisquer registros com valores ausentes (NaN) nas colunas do DataFrame
-    dados_mercado = stock_prices_df.dropna()
+    dados_mercado = stock_prices_df.fillna(0)
 
     # Define uma especificação de janela ordenada pela coluna "Date"
     windowSpec = Window.orderBy("Date")
